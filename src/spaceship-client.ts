@@ -5,6 +5,7 @@ export interface DnsRecord {
   address?: string;
   exchange?: string;
   priority?: number;
+  cname?: string;
   ttl?: number;
 }
 
@@ -109,6 +110,8 @@ export class SpaceshipClient {
           } else {
             throw new Error('MX record must have either priority/exchange fields or value field');
           }
+        } else if (record.type === 'CNAME') {
+          item.cname = record.cname || record.value;
         } else if (record.type === 'A' || record.type === 'AAAA') {
           item.address = record.address || record.value;
         } else {
