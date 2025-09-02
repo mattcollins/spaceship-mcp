@@ -19,6 +19,18 @@ An MCP (Model Context Protocol) server for the Spaceship API, providing tools to
 - Monitor your domains closely when using this server
 - Consider using API keys with limited permissions when possible
 
+## Status
+
+⚠️ **Early Development** - This project is very immature and shared in case it's useful to someone else. Please be aware:
+
+- **Limited testing**: The server has not been extensively tested in production environments
+- **No automated tests**: There are currently no unit tests or integration tests
+- **Minimal error handling**: Error scenarios may not be handled gracefully
+- **API changes**: The interface may change without notice as the project evolves
+- **Use at your own risk**: Suitable for experimentation but not recommended for critical systems
+
+Contributions, bug reports, and feedback are welcome to help improve the project's stability and reliability.
+
 ## Features
 
 - **List DNS Records**: Retrieve all DNS records for a domain
