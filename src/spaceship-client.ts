@@ -1,7 +1,8 @@
 export interface DnsRecord {
   name: string;
   type: string;
-  value: string;
+  value?: string;
+  address?: string;
   ttl?: number;
 }
 
@@ -46,7 +47,18 @@ export class SpaceshipClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText;
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorText = JSON.stringify(errorData);
+        } else {
+          errorText = await response.text();
+        }
+      } catch (e) {
+        errorText = await response.text();
+      }
       throw new Error(
         `Spaceship API error: ${response.status} ${response.statusText}. ${errorText}`
       );
@@ -65,22 +77,32 @@ export class SpaceshipClient {
   }
 
   async getDnsRecords(domain: string): Promise<any> {
-    return await this.makeRequest(`/domains/${encodeURIComponent(domain)}/dns-records`);
+    return await this.makeRequest(`/dns/records/${encodeURIComponent(domain)}?take=100&skip=0`);
   }
 
   async saveDnsRecords(domain: string, records: DnsRecord[]): Promise<void> {
+    const payload = {
+      force: true,
+      items: records.map(record => ({
+        name: record.name,
+        type: record.type,
+        value: record.value,
+        ...(record.ttl && { ttl: record.ttl })
+      }))
+    };
+
     await this.makeRequest(
-      `/domains/${encodeURIComponent(domain)}/dns-records`,
+      `/dns/records/${encodeURIComponent(domain)}`,
       'PUT',
-      { records }
+      payload
     );
   }
 
   async deleteDnsRecords(domain: string, records: DnsRecordToDelete[]): Promise<void> {
     await this.makeRequest(
-      `/domains/${encodeURIComponent(domain)}/dns-records`,
+      `/dns/records/${encodeURIComponent(domain)}`,
       'DELETE',
-      { records }
+      records
     );
   }
 }
