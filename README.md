@@ -2,6 +2,23 @@
 
 An MCP (Model Context Protocol) server for the Spaceship API, providing tools to manage DNS records.
 
+## ⚠️ Security Warning
+
+**Use with extreme caution!** This MCP server gives AI agents direct control over your DNS records. This can be dangerous because:
+
+- **Domain takeover risk**: Incorrect DNS changes could redirect your domain to malicious sites
+- **Service disruption**: Wrong DNS records can make your websites and services inaccessible
+- **Permanent consequences**: Some DNS changes can have lasting effects on your domain's reputation
+- **Unintended modifications**: AI agents may make DNS changes you didn't expect or want
+
+**Recommendations:**
+- Only use this server with domains you can afford to lose or break temporarily
+- Test thoroughly with non-critical domains first
+- Always review AI-suggested DNS changes before confirming them
+- Keep backups of your current DNS configuration
+- Monitor your domains closely when using this server
+- Consider using API keys with limited permissions when possible
+
 ## Features
 
 - **List DNS Records**: Retrieve all DNS records for a domain
