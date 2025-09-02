@@ -44,7 +44,7 @@ An MCP (Model Context Protocol) server for the Spaceship API, providing tools to
    export SPACESHIP_API_SECRET="your_api_secret"
    ```
 
-   You can get your API credentials from the [Spaceship API Manager](https://spaceship.dev/api).
+   You can get your API credentials from the [Spaceship API Manager](https://www.spaceship.com/application/api-manager/).
 
 ## Usage
 
