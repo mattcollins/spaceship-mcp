@@ -80,7 +80,7 @@ class SpaceshipMCPServer {
                       },
                       value: {
                         type: 'string',
-                        description: 'The record value',
+                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com")',
                       },
                       ttl: {
                         type: 'number',
@@ -121,7 +121,7 @@ class SpaceshipMCPServer {
                       },
                       value: {
                         type: 'string',
-                        description: 'The record value',
+                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com")',
                       },
                       ttl: {
                         type: 'number',

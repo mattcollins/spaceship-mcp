@@ -3,6 +3,8 @@ export interface DnsRecord {
   type: string;
   value?: string;
   address?: string;
+  exchange?: string;
+  priority?: number;
   ttl?: number;
 }
 
@@ -83,12 +85,38 @@ export class SpaceshipClient {
   async saveDnsRecords(domain: string, records: DnsRecord[]): Promise<void> {
     const payload = {
       force: true,
-      items: records.map(record => ({
-        name: record.name,
-        type: record.type,
-        value: record.value,
-        ...(record.ttl && { ttl: record.ttl })
-      }))
+      items: records.map(record => {
+        const item: any = {
+          name: record.name,
+          type: record.type,
+          ...(record.ttl && { ttl: record.ttl })
+        };
+
+        // Handle different record types with their specific fields
+        if (record.type === 'MX') {
+          if (record.priority !== undefined && record.exchange) {
+            item.priority = record.priority;
+            item.exchange = record.exchange;
+          } else if (record.value) {
+            // Parse "priority exchange" format from value
+            const parts = record.value.trim().split(/\s+/);
+            if (parts.length >= 2) {
+              item.priority = parseInt(parts[0], 10);
+              item.exchange = parts.slice(1).join(' ');
+            } else {
+              throw new Error(`Invalid MX record format. Expected "priority exchange" but got: ${record.value}`);
+            }
+          } else {
+            throw new Error('MX record must have either priority/exchange fields or value field');
+          }
+        } else if (record.type === 'A' || record.type === 'AAAA') {
+          item.address = record.address || record.value;
+        } else {
+          item.value = record.value;
+        }
+
+        return item;
+      })
     };
 
     await this.makeRequest(
