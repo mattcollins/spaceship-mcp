@@ -80,7 +80,7 @@ class SpaceshipMCPServer {
                       },
                       value: {
                         type: 'string',
-                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com")',
+                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com"). For SRV records, use format "priority weight port target" (e.g., "0 1 443 autodiscover.migadu.com.")',
                       },
                       ttl: {
                         type: 'number',
@@ -121,7 +121,7 @@ class SpaceshipMCPServer {
                       },
                       value: {
                         type: 'string',
-                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com")',
+                        description: 'The record value. For MX records, use format "priority exchange" (e.g., "10 mail.example.com"). For SRV records, use format "priority weight port target" (e.g., "0 1 443 autodiscover.migadu.com.")',
                       },
                       ttl: {
                         type: 'number',

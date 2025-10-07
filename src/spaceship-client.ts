@@ -7,6 +7,12 @@ export interface DnsRecord {
   priority?: number;
   cname?: string;
   ttl?: number;
+  // SRV record specific fields
+  weight?: number;
+  port?: number;
+  target?: string;
+  service?: string;
+  protocol?: string;
 }
 
 export interface DnsRecordToDelete {
@@ -87,6 +93,7 @@ export class SpaceshipClient {
     const payload = {
       force: true,
       items: records.map(record => {
+        console.error(`Processing record: ${JSON.stringify(record)}`);  // Debug logging
         const item: any = {
           name: record.name,
           type: record.type,
@@ -110,6 +117,49 @@ export class SpaceshipClient {
           } else {
             throw new Error('MX record must have either priority/exchange fields or value field');
           }
+        } else if (record.type === 'SRV') {
+          if (record.priority !== undefined && record.weight !== undefined &&
+              record.port !== undefined && record.target) {
+            item.Priority = record.priority;
+            item.Weight = record.weight;
+            item.Port = record.port;
+            item.Target = record.target;
+
+            // Parse service and protocol from name if not provided
+            // Format: _service._protocol.domain
+            // Spaceship API expects service and protocol to include the underscore prefix
+            const nameParts = record.name.split('.');
+            if (nameParts.length >= 2 && nameParts[0].startsWith('_') && nameParts[1].startsWith('_')) {
+              item.Service = record.service || nameParts[0];  // Keep underscore
+              item.Protocol = record.protocol || nameParts[1];  // Keep underscore
+            } else {
+              item.Service = record.service || '';
+              item.Protocol = record.protocol || '';
+            }
+          } else if (record.value) {
+            // Parse "priority weight port target" format from value
+            const parts = record.value.trim().split(/\s+/);
+            if (parts.length >= 4) {
+              item.Priority = parseInt(parts[0], 10);
+              item.Weight = parseInt(parts[1], 10);
+              item.Port = parseInt(parts[2], 10);
+              item.Target = parts[3];
+
+              // Parse service and protocol from name
+              // Spaceship API expects service and protocol to include the underscore prefix
+              const nameParts = record.name.split('.');
+              if (nameParts.length >= 2 && nameParts[0].startsWith('_') && nameParts[1].startsWith('_')) {
+                item.Service = nameParts[0];  // Keep underscore, e.g., "_autodiscover"
+                item.Protocol = nameParts[1];  // Keep underscore, e.g., "_tcp"
+              } else {
+                throw new Error(`Invalid SRV record name format. Expected _service._protocol format but got: ${record.name}`);
+              }
+            } else {
+              throw new Error(`Invalid SRV record format. Expected "priority weight port target" but got: ${record.value}`);
+            }
+          } else {
+            throw new Error('SRV record must have either priority/weight/port/target fields or value field');
+          }
         } else if (record.type === 'CNAME') {
           item.cname = record.cname || record.value;
         } else if (record.type === 'A' || record.type === 'AAAA') {
@@ -118,9 +168,12 @@ export class SpaceshipClient {
           item.value = record.value;
         }
 
+        console.error(`Generated item: ${JSON.stringify(item)}`);  // Debug logging
         return item;
       })
     };
+
+    console.error(`Final payload: ${JSON.stringify(payload, null, 2)}`);  // Debug logging
 
     await this.makeRequest(
       `/dns/records/${encodeURIComponent(domain)}`,
