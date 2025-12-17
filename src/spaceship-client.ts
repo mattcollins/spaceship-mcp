@@ -93,7 +93,6 @@ export class SpaceshipClient {
     const payload = {
       force: true,
       items: records.map(record => {
-        console.error(`Processing record: ${JSON.stringify(record)}`);  // Debug logging
         const item: any = {
           name: record.name,
           type: record.type,
@@ -168,12 +167,9 @@ export class SpaceshipClient {
           item.value = record.value;
         }
 
-        console.error(`Generated item: ${JSON.stringify(item)}`);  // Debug logging
         return item;
       })
     };
-
-    console.error(`Final payload: ${JSON.stringify(payload, null, 2)}`);  // Debug logging
 
     await this.makeRequest(
       `/dns/records/${encodeURIComponent(domain)}`,
