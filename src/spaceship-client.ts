@@ -103,13 +103,13 @@ export class SpaceshipClient {
         // Handle different record types with their specific fields
         if (record.type === 'MX') {
           if (record.priority !== undefined && record.exchange) {
-            item.priority = record.priority;
+            item.preference = record.priority;
             item.exchange = record.exchange;
           } else if (record.value) {
             // Parse "priority exchange" format from value
             const parts = record.value.trim().split(/\s+/);
             if (parts.length >= 2) {
-              item.priority = parseInt(parts[0], 10);
+              item.preference = parseInt(parts[0], 10);
               item.exchange = parts.slice(1).join(' ');
             } else {
               throw new Error(`Invalid MX record format. Expected "priority exchange" but got: ${record.value}`);
@@ -120,37 +120,37 @@ export class SpaceshipClient {
         } else if (record.type === 'SRV') {
           if (record.priority !== undefined && record.weight !== undefined &&
               record.port !== undefined && record.target) {
-            item.Priority = record.priority;
-            item.Weight = record.weight;
-            item.Port = record.port;
-            item.Target = record.target;
+            item.priority = record.priority;
+            item.weight = record.weight;
+            item.port = record.port;
+            item.target = record.target;
 
             // Parse service and protocol from name if not provided
             // Format: _service._protocol.domain
             // Spaceship API expects service and protocol to include the underscore prefix
             const nameParts = record.name.split('.');
             if (nameParts.length >= 2 && nameParts[0].startsWith('_') && nameParts[1].startsWith('_')) {
-              item.Service = record.service || nameParts[0];  // Keep underscore
-              item.Protocol = record.protocol || nameParts[1];  // Keep underscore
+              item.service = record.service || nameParts[0];  // Keep underscore
+              item.protocol = record.protocol || nameParts[1];  // Keep underscore
             } else {
-              item.Service = record.service || '';
-              item.Protocol = record.protocol || '';
+              item.service = record.service || '';
+              item.protocol = record.protocol || '';
             }
           } else if (record.value) {
             // Parse "priority weight port target" format from value
             const parts = record.value.trim().split(/\s+/);
             if (parts.length >= 4) {
-              item.Priority = parseInt(parts[0], 10);
-              item.Weight = parseInt(parts[1], 10);
-              item.Port = parseInt(parts[2], 10);
-              item.Target = parts[3];
+              item.priority = parseInt(parts[0], 10);
+              item.weight = parseInt(parts[1], 10);
+              item.port = parseInt(parts[2], 10);
+              item.target = parts[3];
 
               // Parse service and protocol from name
               // Spaceship API expects service and protocol to include the underscore prefix
               const nameParts = record.name.split('.');
               if (nameParts.length >= 2 && nameParts[0].startsWith('_') && nameParts[1].startsWith('_')) {
-                item.Service = nameParts[0];  // Keep underscore, e.g., "_autodiscover"
-                item.Protocol = nameParts[1];  // Keep underscore, e.g., "_tcp"
+                item.service = nameParts[0];  // Keep underscore, e.g., "_autodiscover"
+                item.protocol = nameParts[1];  // Keep underscore, e.g., "_tcp"
               } else {
                 throw new Error(`Invalid SRV record name format. Expected _service._protocol format but got: ${record.name}`);
               }
