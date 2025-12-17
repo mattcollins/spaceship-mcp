@@ -45,38 +45,92 @@ Type-specific tools with explicit parameters for easy, error-free DNS management
 ### Generic Tools
 - **Create/Update DNS Records**: Generic tools supporting all DNS record types for advanced use cases
 
-## Setup
+## Installation
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Prerequisites
 
-2. Build the project:
-   ```bash
-   npm run build
-   ```
+* Node.js ≥ 18
+* An MCP-compatible client (e.g. Claude Desktop, Cursor, Continue)
+* Spaceship API credentials (see Configuration section below)
 
-3. Set up environment variables:
-   ```bash
-   export SPACESHIP_API_KEY="your_api_key"
-   export SPACESHIP_API_SECRET="your_api_secret"
-   ```
+---
 
-   You can get your API credentials from the [Spaceship API Manager](https://www.spaceship.com/application/api-manager/).
+### Install the server
 
-  Your API key will need the following permissions:
+Clone the repository and build:
 
-  - `dnsrecords:read` - For listing DNS records
-  - `dnsrecords:write` - For creating, updating, and deleting DNS records
+```bash
+git clone https://github.com/mattcollins/spaceship-mcp.git
+cd spaceship-mcp
+npm install
+npm run build
+```
 
-## Usage
+---
 
-### Running the Server
+### Configure your MCP client
+
+Add the server to your MCP client configuration.
+
+#### Example (Claude Desktop)
+
+Edit `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "spaceship": {
+      "command": "node",
+      "args": ["/absolute/path/to/spaceship-mcp/dist/index.js"],
+      "env": {
+        "SPACESHIP_API_KEY": "your_api_key",
+        "SPACESHIP_API_SECRET": "your_api_secret"
+      }
+    }
+  }
+}
+```
+
+Replace `/absolute/path/to/spaceship-mcp` with the actual path where you cloned the repository.
+
+Restart the client after saving the file.
+
+---
+
+### Verify the installation
+
+After restarting your client, confirm the server is running:
+
+* The server appears in the client's MCP/server list
+* No errors appear in the client logs
+* Tools exposed by the server (like `list_dns_records`) are available to the model
+
+To check for startup errors, you can run the server manually:
 
 ```bash
 npm start
 ```
+
+---
+
+## Configuration
+
+### Environment Variables
+
+| Variable                | Description                        | Required |
+| ----------------------- | ---------------------------------- | -------- |
+| `SPACESHIP_API_KEY`     | Your Spaceship API key             | Yes      |
+| `SPACESHIP_API_SECRET`  | Your Spaceship API secret          | Yes      |
+
+Get your API credentials from the [Spaceship API Manager](https://www.spaceship.com/application/api-manager/).
+
+### Required API Permissions
+
+Your API key will need the following permissions:
+- `dnsrecords:read` - For listing DNS records
+- `dnsrecords:write` - For creating, updating, and deleting DNS records
+
+## Usage
 
 ### Available Tools
 
@@ -309,6 +363,37 @@ The server will return appropriate error messages for:
 - API rate limits
 - Network errors
 - Invalid domain names
+
+## Troubleshooting
+
+### Server not appearing in client
+
+* Ensure the `command` path is correct and points to the built `dist/index.js` file
+* Use an absolute path in the configuration, not a relative path
+* Check that the project has been built with `npm run build`
+
+### Authentication errors
+
+* Verify your API credentials are correct in the configuration
+* Check that your API key has the required permissions (`dnsrecords:read` and `dnsrecords:write`)
+* Ensure environment variables are properly set in your client configuration
+
+### Node version issues
+
+* Check your Node version with `node --version`
+* Ensure you're running Node.js 18 or higher
+* If you have multiple Node versions, ensure your MCP client is using the correct one
+
+### Debugging startup errors
+
+Run the server manually to see detailed error messages:
+
+```bash
+cd /path/to/spaceship-mcp
+npm start
+```
+
+Check your MCP client logs for additional error information.
 
 ## Development
 
