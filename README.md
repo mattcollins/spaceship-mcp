@@ -1,6 +1,6 @@
 # Spaceship MCP Server
 
-An MCP (Model Context Protocol) server for the Spaceship API, providing tools to manage DNS records.
+An MCP (Model Context Protocol) server for the Spaceship API, providing easy-to-use tools for managing DNS records. Features specialized tools for common record types (A, AAAA, CNAME, MX, SRV, TXT) with explicit parameters, plus generic tools for advanced use cases.
 
 ## ⚠️ Security Warning
 
@@ -12,31 +12,37 @@ An MCP (Model Context Protocol) server for the Spaceship API, providing tools to
 - **Unintended modifications**: AI agents may make DNS changes you didn't expect or want
 
 **Recommendations:**
-- Only use this server with domains you can afford to lose or break temporarily
-- Test thoroughly with non-critical domains first
-- Always review AI-suggested DNS changes before confirming them
+- Review AI-suggested DNS changes before confirming them
 - Keep backups of your current DNS configuration
 - Monitor your domains closely when using this server
-- Consider using API keys with limited permissions when possible
 
 ## Status
 
-⚠️ **Early Development** - This project is very immature and shared in case it's useful to someone else. Please be aware:
+I'm sharing this in case it's useful to someone else. Please be aware:
 
-- **Limited testing**: The server has not been extensively tested in production environments
+- **Limited testing**: I use this myself but it hasn't been widely tested
 - **No automated tests**: There are currently no unit tests or integration tests
-- **Minimal error handling**: Error scenarios may not be handled gracefully
-- **API changes**: The interface may change without notice as the project evolves
 - **Use at your own risk**: Suitable for experimentation but not recommended for critical systems
 
 Contributions, bug reports, and feedback are welcome to help improve the project's stability and reliability.
 
 ## Features
 
+### Core Operations
 - **List DNS Records**: Retrieve all DNS records for a domain
-- **Create DNS Records**: Add new DNS records to a domain
-- **Update DNS Records**: Modify existing DNS records
 - **Delete DNS Records**: Remove DNS records from a domain
+
+### Specialized Record Creation Tools
+Type-specific tools with explicit parameters for easy, error-free DNS management:
+- **A Records**: Create IPv4 address records
+- **AAAA Records**: Create IPv6 address records
+- **CNAME Records**: Create canonical name aliases
+- **MX Records**: Create mail exchange records with priority and exchange parameters
+- **SRV Records**: Create service locator records with priority, weight, port, and target
+- **TXT Records**: Create text records for SPF, DKIM, DMARC, verification, etc.
+
+### Generic Tools
+- **Create/Update DNS Records**: Generic tools supporting all DNS record types for advanced use cases
 
 ## Setup
 
