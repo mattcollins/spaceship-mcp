@@ -2,9 +2,9 @@
 
 An MCP (Model Context Protocol) server for the Spaceship API, providing easy-to-use tools for managing DNS records. Features specialized tools for common record types (A, AAAA, CNAME, MX, SRV, TXT) with explicit parameters, plus generic tools for advanced use cases.
 
-## ⚠️ Security Warning
+## ⚠️ Warning: use with care
 
-**Use with extreme caution!** This MCP server gives AI agents direct control over your DNS records. This can be dangerous because:
+This MCP server gives AI agents direct control over your DNS records. This can be helpful but also dangerous because:
 
 - **Domain takeover risk**: Incorrect DNS changes could redirect your domain to malicious sites
 - **Service disruption**: Wrong DNS records can make your websites and services inaccessible
@@ -15,12 +15,13 @@ An MCP (Model Context Protocol) server for the Spaceship API, providing easy-to-
 - Review AI-suggested DNS changes before confirming them
 - Keep backups of your current DNS configuration
 - Monitor your domains closely when using this server
+- Avoid using it with an AI agent that may also be accessing untrusted content
 
 ## Status
 
-I'm sharing this in case it's useful to someone else. Please be aware:
+I use this myself for my own projects.
 
-- **Limited testing**: I use this myself but it hasn't been widely tested
+- **Limited testing**: As far as I know it is not in widespread use
 - **No automated tests**: There are currently no unit tests or integration tests
 - **Use at your own risk**: Suitable for experimentation but not recommended for critical systems
 
@@ -63,6 +64,11 @@ Type-specific tools with explicit parameters for easy, error-free DNS management
    ```
 
    You can get your API credentials from the [Spaceship API Manager](https://www.spaceship.com/application/api-manager/).
+
+  Your API key will need the following permissions:
+
+  - `dnsrecords:read` - For listing DNS records
+  - `dnsrecords:write` - For creating, updating, and deleting DNS records
 
 ## Usage
 
@@ -174,13 +180,6 @@ Creates a TXT record (text data).
 - `name` (string, required): The record name (subdomain, use "@" for root)
 - `value` (string, required): The text value
 - `ttl` (number, optional): Time to live in seconds (default: 3600)
-
-## API Permissions
-
-The following permissions are required for your Spaceship API key:
-
-- `dnsrecords:read` - For listing DNS records
-- `dnsrecords:write` - For creating, updating, and deleting DNS records
 
 ## Example Usage
 
