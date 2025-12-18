@@ -238,7 +238,7 @@ class SpaceshipMCPServer {
                 },
                 cname: {
                   type: 'string',
-                  description: 'The canonical name to point to (e.g., "example.com" or "example.com.")',
+                  description: 'The canonical name to point to without trailing dot (e.g., "example.com")',
                 },
                 ttl: {
                   type: 'number',
