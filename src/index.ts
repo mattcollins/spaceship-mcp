@@ -138,7 +138,7 @@ class SpaceshipMCPServer {
           },
           {
             name: 'delete_dns_records',
-            description: 'Delete DNS records for a domain',
+            description: 'Delete DNS records for a domain. Requires full record data matching the existing record.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -148,7 +148,7 @@ class SpaceshipMCPServer {
                 },
                 records: {
                   type: 'array',
-                  description: 'Array of DNS records to delete',
+                  description: 'Array of DNS records to delete (must include full record data)',
                   items: {
                     type: 'object',
                     properties: {
@@ -159,6 +159,26 @@ class SpaceshipMCPServer {
                       type: {
                         type: 'string',
                         description: 'The record type (A, AAAA, CNAME, MX, TXT, etc.)',
+                      },
+                      value: {
+                        type: 'string',
+                        description: 'The record value (for TXT records)',
+                      },
+                      cname: {
+                        type: 'string',
+                        description: 'The CNAME value (for CNAME records)',
+                      },
+                      address: {
+                        type: 'string',
+                        description: 'The IP address (for A/AAAA records)',
+                      },
+                      exchange: {
+                        type: 'string',
+                        description: 'The mail exchange server (for MX records)',
+                      },
+                      preference: {
+                        type: 'number',
+                        description: 'The preference/priority (for MX records)',
                       },
                     },
                     required: ['name', 'type'],
@@ -386,6 +406,11 @@ class SpaceshipMCPServer {
               records: Array<{
                 name: string;
                 type: string;
+                value?: string;
+                cname?: string;
+                address?: string;
+                exchange?: string;
+                preference?: number;
               }>;
             });
 
@@ -503,7 +528,15 @@ class SpaceshipMCPServer {
 
   private async handleDeleteDnsRecords(args: {
     domain: string;
-    records: Array<{ name: string; type: string }>;
+    records: Array<{
+      name: string;
+      type: string;
+      value?: string;
+      cname?: string;
+      address?: string;
+      exchange?: string;
+      preference?: number;
+    }>;
   }) {
     await this.client.deleteDnsRecords(args.domain, args.records);
     return {

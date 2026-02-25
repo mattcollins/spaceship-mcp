@@ -18,6 +18,15 @@ export interface DnsRecord {
 export interface DnsRecordToDelete {
   name: string;
   type: string;
+  value?: string;
+  cname?: string;
+  exchange?: string;
+  preference?: number;
+  address?: string;
+  priority?: number;
+  weight?: number;
+  port?: number;
+  target?: string;
 }
 
 export class SpaceshipClient {
@@ -179,10 +188,35 @@ export class SpaceshipClient {
   }
 
   async deleteDnsRecords(domain: string, records: DnsRecordToDelete[]): Promise<void> {
+    const payload = records.map(record => {
+      const item: any = {
+        name: record.name,
+        type: record.type,
+      };
+
+      if (record.type === 'MX') {
+        item.preference = record.preference;
+        item.exchange = record.exchange;
+      } else if (record.type === 'CNAME') {
+        item.cname = record.cname;
+      } else if (record.type === 'A' || record.type === 'AAAA') {
+        item.address = record.address;
+      } else if (record.type === 'SRV') {
+        item.priority = record.priority;
+        item.weight = record.weight;
+        item.port = record.port;
+        item.target = record.target;
+      } else {
+        item.value = record.value;
+      }
+
+      return item;
+    });
+
     await this.makeRequest(
       `/dns/records/${encodeURIComponent(domain)}`,
       'DELETE',
-      records
+      payload
     );
   }
 }
