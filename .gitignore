@@ -52,3 +52,6 @@ Thumbs.db
 # Temporary folders
 tmp/
 temp/
+
+# Codex local workspace data
+.codex/
