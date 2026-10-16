@@ -30,7 +30,7 @@ Contributions, bug reports, and feedback are welcome to help improve the project
 ## Features
 
 ### Core Operations
-- **List DNS Records**: Retrieve all DNS records for a domain
+- **List DNS Records**: Retrieve the first page of DNS records for a domain (up to 100 records)
 - **Delete DNS Records**: Remove DNS records from a domain
 
 ### Specialized Record Creation Tools
@@ -135,7 +135,7 @@ Your API key will need the following permissions:
 ### Available Tools
 
 #### `list_dns_records`
-Lists all DNS records for a domain.
+Lists DNS records for a domain (currently returns up to 100 records).
 
 **Parameters:**
 - `domain` (string, required): The domain name to list DNS records for
@@ -170,6 +170,12 @@ Deletes DNS records from a domain.
 - `records` (array, required): Array of DNS records to delete
   - `name` (string, required): The record name (subdomain)
   - `type` (string, required): The record type (A, AAAA, CNAME, MX, TXT, etc.)
+  - Additional fields are required depending on record type so the API can match the exact record:
+    - A/AAAA: `address`
+    - CNAME: `cname`
+    - MX: `exchange` and `preference`
+    - SRV: `priority`, `weight`, `port`, and `target`
+    - TXT/other value-based records: `value`
 
 ### Specialized Record Type Tools
 
@@ -348,7 +354,8 @@ The generic tools are still available and support all record types:
     "records": [
       {
         "name": "www",
-        "type": "A"
+        "type": "A",
+        "address": "192.0.2.1"
       }
     ]
   }

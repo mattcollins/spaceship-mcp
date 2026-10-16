@@ -42,7 +42,7 @@ class SpaceshipMCPServer {
         tools: [
           {
             name: 'list_dns_records',
-            description: 'List all DNS records for a domain',
+            description: 'List DNS records for a domain (currently up to 100 records)',
             inputSchema: {
               type: 'object',
               properties: {
