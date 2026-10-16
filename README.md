@@ -22,7 +22,7 @@ This MCP server gives AI agents direct control over your DNS records. This can b
 I use this myself for my own projects.
 
 - **Limited testing**: As far as I know it is not in widespread use
-- **No automated tests**: There are currently no unit tests or integration tests
+- **Focused automated tests**: Credential loading and MCP discovery are tested; live DNS operations are not
 - **Use at your own risk**: Suitable for experimentation but not recommended for critical systems
 
 Contributions, bug reports, and feedback are welcome to help improve the project's stability and reliability.
@@ -123,6 +123,18 @@ npm start
 | `SPACESHIP_API_SECRET`  | Your Spaceship API secret          | Yes      |
 
 Get your API credentials from the [Spaceship API Manager](https://www.spaceship.com/application/api-manager/).
+
+Both environment variables also accept `op://vault/item/field` references.
+The server resolves these through the 1Password CLI (`op` must be on `PATH`)
+only when a tool makes its first API request. Starting the server and listing
+its tools do not access 1Password. Resolved credentials stay in memory for the
+server session; restart the server after rotating them. Failed credential reads
+can be retried by calling the tool again.
+
+For this behavior, launch Node directly and pass the references as literal
+environment values. A launcher such as `direnv` with `op read` in `.envrc` or
+`op run` resolves credentials before server startup. Allow enough tool execution
+time for 1Password approval (for example, `tool_timeout_sec = 120` in Codex).
 
 ### Required API Permissions
 
@@ -406,4 +418,5 @@ Check your MCP client logs for additional error information.
 
 - `npm run dev` - Watch mode for development
 - `npm run build` - Build the TypeScript code
+- `npm test` - Build and test credential loading and MCP discovery without live API calls
 - `npm start` - Run the built server

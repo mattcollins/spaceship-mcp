@@ -1,3 +1,5 @@
+import { resolveCredential } from './credentials.js';
+
 export interface DnsRecord {
   name: string;
   type: string;
@@ -33,17 +35,27 @@ export class SpaceshipClient {
   private readonly baseUrl = 'https://spaceship.dev/api/v1';
   private readonly apiKey: string;
   private readonly apiSecret: string;
+  private headers?: Promise<Record<string, string>>;
 
   constructor(apiKey: string, apiSecret: string) {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
   }
 
-  private getHeaders(): Record<string, string> {
+  private getHeaders(): Promise<Record<string, string>> {
+    return this.headers ??= this.resolveHeaders().catch(error => {
+      this.headers = undefined;
+      throw error;
+    });
+  }
+
+  private async resolveHeaders(): Promise<Record<string, string>> {
+    const apiKey = await resolveCredential(this.apiKey);
+    const apiSecret = await resolveCredential(this.apiSecret);
     return {
       'Content-Type': 'application/json',
-      'X-Api-Key': this.apiKey,
-      'X-Api-Secret': this.apiSecret,
+      'X-Api-Key': apiKey,
+      'X-Api-Secret': apiSecret,
     };
   }
 
@@ -55,7 +67,7 @@ export class SpaceshipClient {
     const url = `${this.baseUrl}${endpoint}`;
     const options: RequestInit = {
       method,
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     };
 
     if (body) {
