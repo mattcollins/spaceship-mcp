@@ -49,7 +49,7 @@ Type-specific tools with explicit parameters for easy, error-free DNS management
 
 ### Prerequisites
 
-* Node.js ≥ 18
+* Node.js ≥ 22
 * An MCP-compatible client (e.g. Claude Desktop, Cursor, Continue)
 * Spaceship API credentials (see Configuration section below)
 
@@ -400,7 +400,7 @@ The server will return appropriate error messages for:
 ### Node version issues
 
 * Check your Node version with `node --version`
-* Ensure you're running Node.js 18 or higher
+* Ensure you're running Node.js 22 or higher
 * If you have multiple Node versions, ensure your MCP client is using the correct one
 
 ### Debugging startup errors
